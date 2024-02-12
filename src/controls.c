@@ -6,7 +6,7 @@
 /*   By: tnicolau <tnicolau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/19 09:50:22 by tnicolau          #+#    #+#             */
-/*   Updated: 2024/01/30 09:33:24 by tnicolau         ###   ########.fr       */
+/*   Updated: 2024/02/07 15:24:12 by tnicolau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,11 @@ int	controls_check(int command, t_game *game)
 		{
 			adding_graphics(game);
 			game->moves_nb++;
-			ft_printf("Number of moves : %d\n", game->moves_nb);
+			ft_printf("Number of moves : %d\r", game->moves_nb);
 		}
 	}
 	if (command == 65307)
-		exit_game(game, 0);
+		exit_game(game);
 	return (0);
 }
 
@@ -57,7 +57,7 @@ int	map_checker(int command, t_game *game)
 	return (0);
 }
 
-int	updater1(t_game *game, int x, int y)
+int	updater(t_game *game, int x, int y)
 {
 	if (game->map[y][x] == '1')
 		return (1);
@@ -79,14 +79,14 @@ int	updater1(t_game *game, int x, int y)
 		else
 		{
 			game->moves_nb++;
-			ft_printf("Number of moves : %d\n", game->moves_nb);
-			return (exit_game(game, 1));
+			game->game_completed = 1;
+			return (exit_game(game));
 		}
 	}
 	return (0);
 }
 
-void	updater2(t_game *game, int x, int y)
+void	updater_player_on_door(t_game *game, int x, int y)
 {
 	if (game->on_exit == 2)
 	{
@@ -97,19 +97,14 @@ void	updater2(t_game *game, int x, int y)
 		game->map[y][x] = '0';
 }
 
-int	exit_game(t_game *game, int game_completed)
+int	exit_game(t_game *game)
 {
-	int	i;
-
-	i = 0;
-	if (game_completed)
-		ft_printf("Congratulations, you won in %d moves !\n", game->moves_nb);
-	mlx_destroy_window(game->mlxpointer, game->winpointer);
-	free(game->mlxpointer);
-	while (i < game->map_height)
+	if (game->game_completed)
 	{
-		free(game->map[i]);
-		i++;
+		ft_printf("Number of moves : %d\r", game->moves_nb);
+		ft_printf("Congratulations, you won in %d moves !\n", game->moves_nb);
 	}
+	free_images(game);
+	free_everything(game);
 	exit(0);
 }

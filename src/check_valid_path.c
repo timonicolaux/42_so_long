@@ -6,7 +6,7 @@
 /*   By: tnicolau <tnicolau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 08:50:29 by tnicolau          #+#    #+#             */
-/*   Updated: 2024/01/30 09:12:58 by tnicolau         ###   ########.fr       */
+/*   Updated: 2024/02/07 14:18:55 by tnicolau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,39 +25,39 @@ int	check_valid_path(t_game *game)
 	game->exit_nb = 0;
 	while (k < 500)
 	{
-		check_valid_path2(game);
+		cvp_height_loop(game);
 		game->i = 0;
 		k++;
 	}
 	game->i = game->map_height;
 	if (game->collectible_nb != game->points || game->exit_nb == 0)
 	{
-		free_all(game->map_cpy, game->i - 1);
+		free_map(game->map_cpy, game->i - 1);
 		return (1);
 	}
 	return (0);
 }
 
-void	check_valid_path2(t_game *game)
+void	cvp_height_loop(t_game *game)
 {
 	while (game->i < game->map_height)
 	{
-		check_valid_path3(game);
+		cvp_width_loop(game);
 		game->j = 0;
 		game->i++;
 	}
 }
 
-void	check_valid_path3(t_game *game)
+void	cvp_width_loop(t_game *game)
 {
 	while (game->j < game->map_width)
 	{
-		check_valid_path4(game);
+		cvp_algo(game);
 		game->j++;
 	}
 }
 
-void	check_valid_path4(t_game *game)
+void	cvp_algo(t_game *game)
 {
 	if (game->map_cpy[game->i][game->j] == 'P')
 	{
@@ -101,7 +101,7 @@ int	copy_map(t_game *game)
 		game->map_cpy[y] = malloc(sizeof(int) * game->map_width);
 		if (!game->map_cpy[y])
 		{
-			free_all(game->map_cpy, y);
+			free_map(game->map_cpy, y);
 			return (1);
 		}
 		while (x < game->map_width)

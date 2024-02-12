@@ -6,7 +6,7 @@
 /*   By: tnicolau <tnicolau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 09:56:19 by tnicolau          #+#    #+#             */
-/*   Updated: 2024/01/31 13:03:16 by tnicolau         ###   ########.fr       */
+/*   Updated: 2024/02/12 16:10:53 by tnicolau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,23 +16,24 @@ int	so_long(char **av)
 {
 	t_game	game;
 
-	game.points = 0;
-	game.player_nb = 0;
-	game.exit_nb = 0;
-	game.moves_nb = 0;
-	game.map = NULL;
-	game.map_cpy = NULL;
-	game.map_width = 0;
-	game.on_exit = 0;
+	ft_memset(&game, 0, sizeof(t_game));
 	if (map_reading(&game, av))
 		return (1);
 	game.mlxpointer = mlx_init();
-	game.winpointer = mlx_new_window(game.mlxpointer, game.map_width * 40,
-			game.map_height * 40, "so_long");
-	save_images(&game);
+	if (!game.mlxpointer)
+	{
+		free_map(game.map_cpy, game.map_height);
+		return (free_map(game.map, game.map_height), 1);
+	}
+	game.winpointer = mlx_new_window(game.mlxpointer, game.map_width * XPM_SIZE,
+			game.map_height * XPM_SIZE, "so_long");
+	if (!game.winpointer)
+		return (free_everything(&game), 1);
+	if (save_floor_wall_player(&game))
+		return (free_everything(&game), 1);
 	adding_graphics(&game);
 	mlx_key_hook(game.winpointer, controls_check, &game);
-	mlx_hook(game.winpointer, 17, 0, (void *)exit, 0);
+	mlx_hook(game.winpointer, 17, 0, exit_game, &game);
 	mlx_loop(game.mlxpointer);
 	return (0);
 }

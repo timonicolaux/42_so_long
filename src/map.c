@@ -6,7 +6,7 @@
 /*   By: tnicolau <tnicolau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 10:43:49 by tnicolau          #+#    #+#             */
-/*   Updated: 2024/01/30 15:18:22 by tnicolau         ###   ########.fr       */
+/*   Updated: 2024/02/12 12:41:34 by tnicolau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,21 +55,21 @@ int	map_conversion(t_game *game, int line_count, char **av)
 		return (1);
 	while (1)
 	{
-		res = map_conversion2(game);
+		res = map_conversion_add_line(game);
 		if (res == 1)
 			return (1);
 		if (res == 2)
 			break ;
 	}
 	if (game->player_nb != 1 || game->exit_nb != 1 || game->points == 0)
-		return (free_all(game->map, game->i - 1), 1);
+		return (free_map(game->map, game->i - 1), 1);
 	i = game->i;
 	if (check_valid_path(game))
-		return (free_all(game->map, i - 1), 1);
+		return (free_map(game->map, i - 1), 1);
 	return (0);
 }
 
-int	map_conversion2(t_game *game)
+int	map_conversion_add_line(t_game *game)
 {
 	char	*line;
 	int		res;
@@ -80,12 +80,12 @@ int	map_conversion2(t_game *game)
 		return (2);
 	game->map[game->i] = malloc(sizeof(int) * strlen_line(line));
 	if (!game->map[game->i])
-		return (free_all(game->map, game->i), 1);
-	if (check_error(game, line, game->i))
+		return (free_map(game->map, game->i), 1);
+	if (check_map_error(game, line, game->i))
 		return (1);
 	while (game->j < strlen_line(line))
 	{
-		res = map_conversion3(game, line);
+		res = map_conversion_insert_line(game, line);
 		if (res == 1)
 			return (1);
 	}
@@ -95,13 +95,13 @@ int	map_conversion2(t_game *game)
 	return (0);
 }
 
-int	map_conversion3(t_game *game, char *line)
+int	map_conversion_insert_line(t_game *game, char *line)
 {
 	game->map[game->i][game->j] = line[game->j];
 	if (line[game->j] != '0' && line[game->j] != '1' && line[game->j] != 'P'
 		&& line[game->j] != 'E' && line[game->j] != 'C')
 	{
-		free_all(game->map, game->i);
+		free_map(game->map, game->i);
 		free(line);
 		return (1);
 	}

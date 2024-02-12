@@ -18,7 +18,8 @@ SRC			=	$(SRCS_DIR)/main.c \
 				$(SRCS_DIR)/utils.c \
 				$(SRCS_DIR)/check_valid_path.c \
 				$(SRCS_DIR)/add_graphics.c \
-				$(SRCS_DIR)/update_map_utils.c
+				$(SRCS_DIR)/update_map_utils.c \
+				$(SRCS_DIR)/free_utils.c
 
 GNL_SRC		=	$(GNL_DIR)/get_next_line.c \
 				$(GNL_DIR)/get_next_line_utils.c
